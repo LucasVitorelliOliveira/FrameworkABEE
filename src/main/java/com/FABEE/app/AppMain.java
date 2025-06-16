@@ -13,6 +13,8 @@ import com.FABEE.validation.Validator;
 import com.FABEE.json.JsonMapper;
 import com.FABEE.web.Dispatcher;
 import com.FABEE.app.controller.UserController;
+import com.FABEE.core.SecurityProxy;
+import com.FABEE.app.SecurityContext;
 
 import java.util.List;
 
@@ -72,6 +74,24 @@ public class AppMain {
 //        Dispatcher.simulateRequest("GET", "/users");
 //        Dispatcher.simulateRequest("POST", "/users", "Lucas");
 //        Dispatcher.simulateRequest("GET", "/usuarios");
+
+        // Teste: Controle de Acesso
+        UserService rawService = new UserService();
+        rawService.repo = new UserRepository();
+
+        IUserService securedService = SecurityProxy.createSecure(IUserService.class, rawService);
+
+        // Teste com USER
+        SecurityContext.setRole("USER");
+        try {
+            securedService.cadastrarUsuario("Lucas");
+        } catch (Exception e) {
+            System.out.println("🔒 " + e.getMessage());
+        }
+
+        // Teste com ADMIN
+        SecurityContext.setRole("ADMIN");
+        securedService.cadastrarUsuario("Lucas Admin");
 
     }
 }
