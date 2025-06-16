@@ -11,6 +11,8 @@ import com.FABEE.app.IUserService;
 import com.FABEE.app.UserService;
 import com.FABEE.validation.Validator;
 import com.FABEE.json.JsonMapper;
+import com.FABEE.web.Dispatcher;
+import com.FABEE.app.controller.UserController;
 
 import java.util.List;
 
@@ -65,6 +67,11 @@ public class AppMain {
 //        System.out.println("Usuário reconstruído: " + user2.getName());
 
         // Teste: Roteamento
+        Dispatcher.init(UserController.class);
+
+        Dispatcher.simulateRequest("GET", "/users");
+        Dispatcher.simulateRequest("POST", "/users", "Lucas");
+        Dispatcher.simulateRequest("GET", "/usuarios");
 
     }
 }
