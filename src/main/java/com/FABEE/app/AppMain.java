@@ -1,5 +1,6 @@
 package com.FABEE.app;
 
+import com.FABEE.annotations.AutoDoc;
 import com.FABEE.core.Injector;
 import com.FABEE.orm.OrmHandler;
 import com.FABEE.app.model.User;
@@ -20,6 +21,71 @@ import java.util.List;
 
 public class AppMain {
     public static void main(String[] args) {
+        System.out.println("=== BOOTSTRAP Framework ABEE ===\n");
+
+        // Injeção de dependência
+        Injector.init(UserService.class, UserRepository.class);
+
+        // Obter serviço cru
+        UserService rawService = Injector.getBean(UserService.class);
+
+        // Proxy de segurança + logging
+        IUserService secureLoggedService = LoggingProxy.create(
+                IUserService.class,
+                SecurityProxy.createSecure(IUserService.class, rawService)
+        );
+
+        // Contexto de segurança
+        SecurityContext.setRole("USER");
+        try {
+            secureLoggedService.cadastrarUsuario("Lucas");
+        } catch (Exception e) {
+            System.out.println("🔒 " + e.getMessage());
+        }
+
+        SecurityContext.setRole("ADMIN");
+        secureLoggedService.cadastrarUsuario("AdminUser");
+
+        // Validação
+        User user = new User(null, "Lu", "lucas@example.com");
+        List<String> erros = Validator.validar(user);
+        if (!erros.isEmpty()) {
+            System.out.println("\n❌ Erros de validação:");
+            erros.forEach(System.out::println);
+        }
+
+        // Serialização JSON
+        user = new User("001", "Lucas", "lucas@email.com");
+        String json = JsonMapper.toJson(user);
+        System.out.println("\n📤 JSON gerado:");
+        System.out.println(json);
+
+        User user2 = JsonMapper.fromJson(json, User.class);
+        System.out.println("📥 Usuario reconstruído: " + user2.getName());
+
+        // Leitura de metadados
+        System.out.println("\n🔎 Metadados da classe User:");
+        MetadataReader.printClassMetadata(User.class);
+
+        // ORM
+        String insert = OrmHandler.generateInsertSQL(user);
+        String select = OrmHandler.generateSelectByIdSQL(User.class, "001");
+        System.out.println("🗃️ SQL gerado:");
+        System.out.println(insert);
+        System.out.println(select);
+
+        // Simulação de Web API
+        Dispatcher.init(UserController.class);
+        System.out.println("\n🌐 Simulando requisições:");
+        Dispatcher.simulateRequest("GET", "/users");
+        Dispatcher.simulateRequest("POST", "/users", "Lucas via POST");
+
+        // 📝 Simulação AutoDoc (tema 9)
+        System.out.println("\n📚 Simulando @AutoDoc:");
+        simulateAutoDoc(User.class);
+
+
+        // -----------------------------------------------Área de Testes-----------------------------------------------
         // Teste: Injeção de Independencia
 //        Injector.init(UserService.class, UserRepository.class);
 //
@@ -76,22 +142,33 @@ public class AppMain {
 //        Dispatcher.simulateRequest("GET", "/usuarios");
 
         // Teste: Controle de Acesso
-        UserService rawService = new UserService();
-        rawService.repo = new UserRepository();
+//        UserService rawService = new UserService();
+//        rawService.repo = new UserRepository();
+//
+//        IUserService securedService = SecurityProxy.createSecure(IUserService.class, rawService);
+//
+//        // Teste com USER
+//        SecurityContext.setRole("USER");
+//        try {
+//            securedService.cadastrarUsuario("Lucas");
+//        } catch (Exception e) {
+//            System.out.println("🔒 " + e.getMessage());
+//        }
+//
+//        // Teste com ADMIN
+//        SecurityContext.setRole("ADMIN");
+//        securedService.cadastrarUsuario("Lucas Admin");
+    }
 
-        IUserService securedService = SecurityProxy.createSecure(IUserService.class, rawService);
-
-        // Teste com USER
-        SecurityContext.setRole("USER");
-        try {
-            securedService.cadastrarUsuario("Lucas");
-        } catch (Exception e) {
-            System.out.println("🔒 " + e.getMessage());
+    // Simula um processor em tempo de compilação
+    public static void simulateAutoDoc(Class<?> clazz) {
+        if (clazz.isAnnotationPresent(AutoDoc.class)) {
+            AutoDoc doc = clazz.getAnnotation(AutoDoc.class);
+            System.out.println("Classe: " + clazz.getSimpleName());
+            System.out.println("Autor: " + doc.author());
+            System.out.println("Descrição: " + doc.description());
+        } else {
+            System.out.println("Classe não documentada com @AutoDoc.");
         }
-
-        // Teste com ADMIN
-        SecurityContext.setRole("ADMIN");
-        securedService.cadastrarUsuario("Lucas Admin");
-
     }
 }
