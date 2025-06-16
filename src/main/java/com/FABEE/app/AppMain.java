@@ -6,6 +6,12 @@ import com.FABEE.app.model.User;
 import com.FABEE.core.MethodInvoker;
 import com.FABEE.app.DynamicExample;
 import com.FABEE.core.MetadataReader;
+import com.FABEE.core.LoggingProxy;
+import com.FABEE.app.IUserService;
+import com.FABEE.app.UserService;
+import com.FABEE.validation.Validator;
+
+import java.util.List;
 
 public class AppMain {
     public static void main(String[] args) {
@@ -37,6 +43,18 @@ public class AppMain {
 //        MetadataReader.printClassMetadata(User.class);
 
         // Teste: Dynamic Proxies
+//        UserService rawService = new UserService();
+//        rawService.repo = new UserRepository(); // injeção manual por enquanto
+//
+//        IUserService proxyService = LoggingProxy.create(IUserService.class, rawService);
+//        proxyService.cadastrarUsuario("Lucas");
+
+        // Teste Validação Customizada
+//        User u = new User(null, "Lu", "lucas@email.com");
+//        List<String> erros = Validator.validar(u);
+//        erros.forEach(System.out::println);
+
+        // Teste Serialização/Deserialização JSON
 
     }
 }

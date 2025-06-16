@@ -6,9 +6,12 @@ import com.FABEE.annotations.*;
 public class User {
 
     @Id
+    @NotNull(message = "ID não pode ser nulo.")
     private String id;
 
     @Column(name = "name")
+    @NotNull(message = "Nome é obrigatório.")
+    @MinLength(value = 3, message = "Nome deve ter ao menos 3 caracteres.")
     private String name;
 
     @Column(name = "email")

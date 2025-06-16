@@ -4,11 +4,12 @@ import com.FABEE.annotations.Inject;
 import com.FABEE.annotations.Service;
 
 @Service
-public class UserService {
+public class UserService implements IUserService {
 
     @Inject
-    private UserRepository repo;
+    protected UserRepository repo;
 
+    @Override
     public void cadastrarUsuario(String nome) {
         repo.save(nome);
     }
