@@ -10,6 +10,7 @@ import com.FABEE.core.LoggingProxy;
 import com.FABEE.app.IUserService;
 import com.FABEE.app.UserService;
 import com.FABEE.validation.Validator;
+import com.FABEE.json.JsonMapper;
 
 import java.util.List;
 
@@ -49,12 +50,21 @@ public class AppMain {
 //        IUserService proxyService = LoggingProxy.create(IUserService.class, rawService);
 //        proxyService.cadastrarUsuario("Lucas");
 
-        // Teste Validação Customizada
+        // Teste: Validação Customizada
 //        User u = new User(null, "Lu", "lucas@email.com");
 //        List<String> erros = Validator.validar(u);
 //        erros.forEach(System.out::println);
 
-        // Teste Serialização/Deserialização JSON
+        // Teste: Serialização/Deserialização JSON
+//        User user = new User("123", "Lucas", "lucas@email.com");
+//
+//        String json = JsonMapper.toJson(user);
+//        System.out.println("JSON gerado: " + json);
+//
+//        User user2 = JsonMapper.fromJson(json, User.class);
+//        System.out.println("Usuário reconstruído: " + user2.getName());
+
+        // Teste: Roteamento
 
     }
 }
