@@ -13,16 +13,20 @@ public class SecurityProxy {
                 interfaceClass.getClassLoader(),
                 new Class<?>[]{interfaceClass},
                 (proxy, method, args) -> {
+                    try {
+                        Method realMethod = realObject.getClass().getMethod(method.getName(), method.getParameterTypes());
 
-                    Method realMethod = realObject.getClass().getMethod(method.getName(), method.getParameterTypes());
-
-                    if (realMethod.isAnnotationPresent(AdminOnly.class)) {
-                        if (!"ADMIN".equals(SecurityContext.getRole())) {
-                            throw new SecurityException("Acesso negado: requer perfil ADMIN.");
+                        if (realMethod.isAnnotationPresent(AdminOnly.class)) {
+                            if (!"ADMIN".equals(SecurityContext.getRole())) {
+                                throw new SecurityException("Acesso negado: requer perfil ADMIN.");
+                            }
                         }
-                    }
 
-                    return realMethod.invoke(realObject, args);
+                        return realMethod.invoke(realObject, args);
+                    } catch (InvocationTargetException ex) {
+                        // Desencapsular exceção real
+                        throw ex.getCause();
+                    }
                 }
         );
     }

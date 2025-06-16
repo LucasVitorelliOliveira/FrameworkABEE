@@ -14,7 +14,11 @@ public class LoggingProxy {
                             method.getName(),
                             args != null ? java.util.Arrays.toString(args) : "[]");
 
-                    return method.invoke(realObject, args);
+                    try {
+                        return method.invoke(realObject, args);
+                    } catch (InvocationTargetException ex) {
+                        throw ex.getCause(); // DESENCAPSULA
+                    }
                 }
         );
     }
