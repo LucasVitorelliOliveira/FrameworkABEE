@@ -2,6 +2,7 @@ package com.FABEE.app.model;
 
 import com.FABEE.annotations.*;
 
+@AutoDoc(author = "Lucas Oliveira", description = "Entidade representante de um usuário")
 @Entity(tableName = "users")
 public class User {
 

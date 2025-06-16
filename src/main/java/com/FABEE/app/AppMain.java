@@ -67,11 +67,11 @@ public class AppMain {
 //        System.out.println("Usuário reconstruído: " + user2.getName());
 
         // Teste: Roteamento
-        Dispatcher.init(UserController.class);
-
-        Dispatcher.simulateRequest("GET", "/users");
-        Dispatcher.simulateRequest("POST", "/users", "Lucas");
-        Dispatcher.simulateRequest("GET", "/usuarios");
+//        Dispatcher.init(UserController.class);
+//
+//        Dispatcher.simulateRequest("GET", "/users");
+//        Dispatcher.simulateRequest("POST", "/users", "Lucas");
+//        Dispatcher.simulateRequest("GET", "/usuarios");
 
     }
 }
